@@ -1,0 +1,58 @@
+graph TB
+    %% Define styles
+    classDef vpc fill:#E8F4FA,stroke:#1A73E8,stroke-width:2px
+    classDef subnet fill:#F1F8E9,stroke:#7CB342,stroke-width:1px
+    classDef instance fill:#FFF3E0,stroke:#FB8C00,stroke-width:1px
+    classDef securityGroup fill:none,stroke:#F44336,stroke-width:1px,stroke-dasharray: 5 5
+    classDef internetGateway fill:#E3F2FD,stroke:#1565C0,stroke-width:1px
+    classDef routeTable fill:#E8EAF6,stroke:#3949AB,stroke-width:1px
+    classDef nacl fill:#F3E5F5,stroke:#8E24AA,stroke-width:1px
+    classDef eip fill:#FAFAFA,stroke:#616161,stroke-width:1px
+    
+    %% AWS Resources
+    VPC["VPC<br/>(10.0.0.0/16)"]
+    PublicSubnet["Public Subnet<br/>(10.0.0.0/24)"]
+    IGW["Internet Gateway"]
+    RT["Route Table<br/>0.0.0.0/0 → IGW"]
+    NACL["Network ACL<br/>Allow All Traffic"]
+    SG["Security Group<br/>Inbound: TCP 80"]
+    EC2["EC2 Instance<br/>t2.micro<br/>Web Server"]
+    EIP["Elastic IP"]
+    
+    %% Connections
+    VPC --- IGW
+    VPC --- PublicSubnet
+    PublicSubnet --- RT
+    PublicSubnet --- NACL
+    PublicSubnet --- EC2
+    EC2 --- SG
+    EC2 --- EIP
+    RT --- IGW
+    
+    %% Apply styles
+    class VPC vpc
+    class PublicSubnet subnet
+    class IGW internetGateway
+    class RT routeTable
+    class NACL nacl
+    class SG securityGroup
+    class EC2 instance
+    class EIP eip
+    
+    %% Subgraph for VPC
+    subgraph VPC_Resources ["VPC (10.0.0.0/16)"]
+        PublicSubnet
+        RT
+        NACL
+        subgraph EC2_Resources ["EC2 Resources"]
+            EC2
+            SG
+            EIP
+        end
+    end
+    
+    %% External Resources
+    subgraph External
+        IGW
+    end
+
